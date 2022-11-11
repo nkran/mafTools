@@ -34,6 +34,7 @@
 #include "buildVersion.h"
 
 const char *g_version = "version 0.1 September 2012";
+static bool keepFirst = false;
 
 typedef struct scoredMafLine {
     // augmented data structure
@@ -71,7 +72,7 @@ duplicate_t* findDuplicate(duplicate_t *dup, char *species);
 double bitScore(char a, char b);
 double scoreSequence(char *consensus, char *seq);
 void populateMafLineArray(scoredMafLine_t *head, scoredMafLine_t **array);
-void findBestDupes(duplicate_t *head, char *consensus);
+void findBestDupes(mafBlock_t *block, duplicate_t *head, char *consensus);
 int cmp_by_score(const void *a, const void *b);
 void correctSpeciesNames(mafBlock_t *block);
 void checkBlock(mafBlock_t *block);
@@ -90,10 +91,11 @@ void parseOptions(int argc, char **argv, char *filename) {
             {"help", no_argument, 0, 'h'},
             {"version", no_argument, 0, 0},
             {"maf",  required_argument, 0, 'm'},
+            {"keep-first", no_argument, 0, 'k'},
             {0, 0, 0, 0}
         };
         int longIndex = 0;
-        c = getopt_long(argc, argv, "d:m:h:v",
+        c = getopt_long(argc, argv, "d:m:kh:v",
                         longOptions, &longIndex);
         if (c == -1)
             break;
@@ -107,6 +109,9 @@ void parseOptions(int argc, char **argv, char *filename) {
         case 'm':
             setMName = 1;
             sscanf(optarg, "%s", filename);
+            break;
+        case 'k':
+            keepFirst = true;
             break;
         case 'v':
             g_verbose_flag++;
@@ -160,6 +165,7 @@ void usage(void) {
     usageMessage('h', "help", "show this help message and exit.");
     usageMessage('m', "maf", "path to maf file. use - for stdin.");
     usageMessage('v', "verbose", "turns on verbose output.");
+    usageMessage('k', "keep-first", "never filter the first line of a block.");
     exit(EXIT_FAILURE);
 }
 scoredMafLine_t* newScoredMafLine(void) {
@@ -452,10 +458,11 @@ void populateMafLineArray(scoredMafLine_t *head, scoredMafLine_t **array) {
         m = m->next;
     }
 }
-void findBestDupes(duplicate_t *head, char *consensus) {
+void findBestDupes(mafBlock_t *block, duplicate_t *head, char *consensus) {
     // For each duplicate list, go through its mafline list and find the best line and move it
     // to the head of the list.
     duplicate_t *d = head;
+    mafLine_t *first_line =  maf_mafLine_getNext(maf_mafBlock_getHeadLine(block));
     scoredMafLine_t *sml = NULL;
     while (d != NULL) {
         if (d->numSequences < 2) {
@@ -466,7 +473,12 @@ void findBestDupes(duplicate_t *head, char *consensus) {
         // score all the maf lines
         sml = d->headScoredMaf;
         while (sml != NULL) {
-            sml->score = scoreSequence(consensus, maf_mafLine_getSequence(sml->mafLine));
+            if (keepFirst && sml->mafLine == first_line) {
+                // keepFirst means we never filter first sequence, so give it unbeatable score
+                sml->score = (double)INT32_MAX;
+            } else {
+                sml->score = scoreSequence(consensus, maf_mafLine_getSequence(sml->mafLine));
+            }
             sml = sml->next;
         }
         // sort on scores
@@ -575,7 +587,7 @@ void checkBlock(mafBlock_t *block) {
     consensus[0] = '\0';
     buildConsensus(consensus, sequences, n,
                    maf_mafLine_getLineNumber(maf_mafBlock_getHeadLine(block))); // lineno used for error reporting
-    findBestDupes(dupSpeciesHead, consensus);
+    findBestDupes(block, dupSpeciesHead, consensus);
     reportBlockWithDuplicates(block, dupSpeciesHead);
     // clean up
     destroyStringArray(species, n);
