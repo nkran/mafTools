@@ -158,7 +158,7 @@ void usage(void) {
             "earliest in the file. \n\n");
     fprintf(stderr, "Options: \n");
     usageMessage('h', "help", "show this help message and exit.");
-    usageMessage('m', "maf", "path to maf file.");
+    usageMessage('m', "maf", "path to maf file. use - for stdin.");
     usageMessage('v', "verbose", "turns on verbose output.");
     exit(EXIT_FAILURE);
 }

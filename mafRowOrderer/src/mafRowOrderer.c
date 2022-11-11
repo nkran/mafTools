@@ -64,7 +64,7 @@ void usage(void) {
             );
     fprintf(stderr, "Options: \n");
     usageMessage('h', "help", "show this help message and exit.");
-    usageMessage('m', "maf", "path to maf file.");
+    usageMessage('m', "maf", "path to maf file. use - for stdin.");
     usageMessage('\0', "order", "comma separated list of sequence names.");
     usageMessage('v', "verbose", "turns on verbose output.");
     exit(EXIT_FAILURE);

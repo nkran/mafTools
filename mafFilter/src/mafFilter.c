@@ -75,7 +75,7 @@ void usage(void) {
             "'mm9' and 'rn4' using --includeSeq.\n\n");
     fprintf(stderr, "Options: \n");
     usageMessage('h', "help", "show this help message and exit.");
-    usageMessage('m', "maf", "path to maf file.");
+    usageMessage('m', "maf", "path to maf file. use - for stdin.");
     usageMessage('i', "includeSeq", "comma separated list of sequence names to include.");
     usageMessage('e', "excludeSeq", "comma separated list of sequence names to exclude.");
     usageMessage('g', "noDegreeGT", "filter out all blocks with degree greater than this value.");

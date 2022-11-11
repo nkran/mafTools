@@ -57,7 +57,7 @@ void usage(void) {
         "The n-coverage of B on A is the proportion of sites in A that align to n or more sites in B.\n");
     fprintf(stderr, "Options: \n");
     usageMessage('h', "help", "show this help message and exit.");
-    usageMessage('m', "maf", "path to maf file.");
+    usageMessage('m', "maf", "path to maf file. use - for stdin.");
     usageMessage('s', "speciesOrChr",
             "species or species.chromosome name, e.g. `hg19' or 'hg19.chr1', if not specified reports results for every possible species."
                 "wildcard at the end.");

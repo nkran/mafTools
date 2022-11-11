@@ -67,7 +67,7 @@ void usage(void) {
             "nothing is returned.\n\n");
     fprintf(stderr, "Options: \n");
     usageMessage('h', "help", "show this help message and exit.");
-    usageMessage('m', "maf", "path to maf file.");
+    usageMessage('m', "maf", "path to maf file. use - for stdin.");
     usageMessage('s', "seq", "sequence name, e.g. `hg18.chr2'.");
     usageMessage('p', "pos", "position along the chromosome you are searching for. "
                  "Must be a positive number.");
