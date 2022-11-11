@@ -379,7 +379,12 @@ mafFileApi_t* maf_newMfa(const char *filename, char const *mode) {
   mafFileApi_t *mfa = (mafFileApi_t *) de_malloc(sizeof(*mfa));
   mfa->lineNumber = 0;
   mfa->lastLine = NULL;
-  mfa->mfp = de_fopen(filename, mode);
+  if (strcmp(filename, "-") == 0) {
+    assert(strcmp(mode, "r") == 0);
+    mfa->mfp = stdin;
+  } else {
+    mfa->mfp = de_fopen(filename, mode);
+  }
   mfa->filename = de_strdup(filename);
   return mfa;
 }
@@ -423,7 +428,7 @@ void maf_destroyMafBlockList(mafBlock_t *mb) {
   }
 }
 void maf_destroyMfa(mafFileApi_t *mfa) {
-  if (mfa->mfp != NULL) {
+  if (mfa->mfp != NULL && mfa->mfp != stdin) {
     fclose(mfa->mfp);
     mfa->mfp = NULL;
   }

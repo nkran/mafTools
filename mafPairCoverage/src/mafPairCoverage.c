@@ -62,7 +62,7 @@ void usage(void) {
           "columns divided by the total size of genome B.\n\n");
   fprintf(stderr, "Options: \n");
   usageMessage('h', "help", "show this help message and exit.");
-  usageMessage('m', "maf", "path to maf file.");
+  usageMessage('m', "maf", "path to maf file. use - for stdin.");
   usageMessage('\0', "seq1", "sequence name, e.g. `hg19*'. Accepts * "
                "wildcard at the end.");
   usageMessage('\0', "seq2", "sequence name, e.g. `mm9.chr9'. Accepts * "

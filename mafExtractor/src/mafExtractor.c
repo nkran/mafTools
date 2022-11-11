@@ -50,7 +50,7 @@ void usage(void) {
             "containing the querry will be printed to standard out.\n\n");
     fprintf(stderr, "Options: \n");
     usageMessage('h', "help", "show this help message and exit.");
-    usageMessage('m', "maf", "path to maf file.");
+    usageMessage('m', "maf", "path to maf file. use - for stdin.");
     usageMessage('s', "seq", "sequence name, e.g. `hg18.chr2'.");
     usageMessage('\0', "start", "start of region, inclusive, 0 based.");
     usageMessage('\0', "stop", "end of region, inclusive, 0 based.");
