@@ -1,8 +1,5 @@
 include inc/common.mk
 
-python_version_full := $(wordlist 2,4,$(subst ., ,$(shell python --version 2>&1)))
-python_version_major := $(word 1,${python_version_full})
-python_version_minor := $(word 2,${python_version_full})
 ##############################
 # These modules are dependent and are
 # only included if their depedencies exist!
@@ -39,11 +36,6 @@ all: ${modules:%=%.all}
 
 %.all:
 	cd $* && make all
-
-# python :
-# 	@echo ${python_version_full}
-# 	@echo ${python_version_major}
-# 	@echo ${python_version_minor}
 
 clean: ${modules:%=%.clean}
 
