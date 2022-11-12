@@ -17,9 +17,9 @@ else
 	ToFasta = mafToFastaStitcher
 	PairCoverage = mafPairCoverage
 	Coverage = mafCoverage
-ifeq ($(wildcard ../sonLib/lib/stPinchesAndCacti.a),)
+ifeq ($(wildcard ${sonLibPath}/stPinchesAndCacti.a),)
 	TransitiveClosure =
-$(warning Because dependency ../pinchesAndCacti is missing mafTransitiveClosure will not be built / tested / cleaned. See README.md for information about dependencies.)
+$(warning Because dependency ${sonLibPath}/pinchesAndCacti is missing mafTransitiveClosure will not be built / tested / cleaned. See README.md for information about dependencies.)
 else
 	TransitiveClosure = mafTransitiveClosure
 endif # sonlib
