@@ -3,14 +3,14 @@ include inc/common.mk
 ##############################
 # These modules are dependent and are
 # only included if their depedencies exist!
-ifeq ($(wildcard ../sonLib/Makefile),)
+ifeq ($(wildcard ${sonLibPath}/../Makefile),)
 	Comparator =
 	TransitiveClosure =
 	Stats =
 	ToFasta =
 	PairCoverage =
 	Coverage =
-$(warning Because dependency ../sonLib is missing mafComparator, mafTransitiveClosure, mafStats, mafToFastaStitcher, mafPairCoverage, mafCoverage will not be built / tested / cleaned. See README.md for information about dependencies.)
+$(warning Because dependency ${sonLibPath} is missing mafComparator, mafTransitiveClosure, mafStats, mafToFastaStitcher, mafPairCoverage, mafCoverage will not be built / tested / cleaned. See README.md for information about dependencies.)
 else
 	Comparator = mafComparator
 	Stats = mafStats
