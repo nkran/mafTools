@@ -44,8 +44,9 @@ mafBlock_t *processBlockForSplice(mafBlock_t *b, uint64_t blockNumber, const cha
                                   uint64_t start, uint64_t stop, bool store);
 mafBlock_t *spliceBlock(mafBlock_t *mb, uint64_t l, uint64_t r, int64_t **offsetArray);
 void checkBlock(mafBlock_t *b, uint64_t blockNumber, const char *seq, uint64_t start,
-                uint64_t stop, bool *printedHeader, bool isSoft);
-void processBody(mafFileApi_t *mfa, char *seq, uint64_t start, uint64_t stop, bool isSoft);
+                uint64_t stop, bool *printedHeader, bool isSoft, bool checkFirstLineOnly);
+void processBody(mafFileApi_t *mfa, char *seq, uint64_t start, uint64_t stop, bool isSoft,
+                 bool checkFirstLineOnly);
 uint64_t sumBool(bool *array, uint64_t n);
 void printOffsetArray(int64_t **offsetArray, uint64_t n);
 

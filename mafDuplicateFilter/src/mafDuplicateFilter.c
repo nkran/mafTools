@@ -462,7 +462,10 @@ void findBestDupes(mafBlock_t *block, duplicate_t *head, char *consensus) {
     // For each duplicate list, go through its mafline list and find the best line and move it
     // to the head of the list.
     duplicate_t *d = head;
-    mafLine_t *first_line =  maf_mafLine_getNext(maf_mafBlock_getHeadLine(block));
+    mafLine_t *first_line =  maf_mafBlock_getHeadLine(block);
+    if (maf_mafLine_getType(firest_line) == 'a') {
+        first_line = maf_mafLine_getNext(first_line);
+    }
     scoredMafLine_t *sml = NULL;
     while (d != NULL) {
         if (d->numSequences < 2) {

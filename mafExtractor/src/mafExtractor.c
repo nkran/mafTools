@@ -55,11 +55,12 @@ void usage(void) {
     usageMessage('\0', "start", "start of region, inclusive, 0 based.");
     usageMessage('\0', "stop", "end of region, inclusive, 0 based.");
     usageMessage('\0', "soft", "include entire block even if it has gaps or over-hangs. default=false.");
+    usageMessage('\0', "first", "only check the first line of each block.");
     usageMessage('v', "verbose", "turns on verbose output.");
     exit(EXIT_FAILURE);
 }
 void parseOptions(int argc, char **argv, char *filename, char *seqName, uint64_t *start, 
-                  uint64_t *stop, bool *isSoft) {
+                  uint64_t *stop, bool *isSoft, bool *checkFirstLineOnly) {
     extern int g_debug_flag;
     extern int g_verbose_flag;
     int c;
@@ -76,6 +77,7 @@ void parseOptions(int argc, char **argv, char *filename, char *seqName, uint64_t
             {"start", required_argument, 0, 0},
             {"stop", required_argument, 0, 0},
             {"soft", no_argument, 0, 0},
+            {"first", no_argument, 0, 0},            
             {0, 0, 0, 0}
         };
         int longIndex = 0;
@@ -103,6 +105,8 @@ void parseOptions(int argc, char **argv, char *filename, char *seqName, uint64_t
                 setStop = true;
             } else if (strcmp("soft", longOptions[longIndex].name) == 0) {
                 *isSoft = true;
+            } else if (strcmp("first", longOptions[longIndex].name) == 0) {
+                *checkFirstLineOnly = true;
             } else if (strcmp("version", longOptions[longIndex].name) == 0) {
                 version();
                 exit(EXIT_SUCCESS);
@@ -158,10 +162,11 @@ int main(int argc, char **argv) {
     char filename[kMaxStringLength];
     uint64_t start, stop;
     bool isSoft = false;
-    parseOptions(argc, argv, filename, seq, &start, &stop, &isSoft);
+    bool checkFirstLineOnly = false;
+    parseOptions(argc, argv, filename, seq, &start, &stop, &isSoft, &checkFirstLineOnly);
     mafFileApi_t *mfa = maf_newMfa(filename, "r");
 
-    processBody(mfa, seq, start, stop, isSoft);
+    processBody(mfa, seq, start, stop, isSoft, checkFirstLineOnly);
     maf_destroyMfa(mfa);
     
     return EXIT_SUCCESS;
