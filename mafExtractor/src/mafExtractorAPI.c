@@ -420,7 +420,6 @@ void checkBlock(mafBlock_t *b, uint64_t blockNumber, const char *seq, uint64_t s
     // read through each line of a mafBlock and if the sequence matches the region
     // we're looking for, report the block.
     mafLine_t *ml = maf_mafBlock_getHeadLine(b);
-    bool first = true;
     while (ml != NULL) {
         if (searchMatched(ml, seq, start, stop)) {
             if (!*printedHeader) {
@@ -437,13 +436,10 @@ void checkBlock(mafBlock_t *b, uint64_t blockNumber, const char *seq, uint64_t s
                 break;
             }
         }
-        ml = maf_mafLine_getNext(ml);
-        if (checkFirstLineOnly && !first) {
+        if (checkFirstLineOnly && maf_mafLine_getType(ml) == 's') {
             break;
         }
-        if (first == true && maf_mafLine_getType(ml) == 's') {
-            first = false;
-        }
+        ml = maf_mafLine_getNext(ml);        
     }
 }
 void processBody(mafFileApi_t *mfa, char *seq, uint64_t start, uint64_t stop, bool isSoft,
