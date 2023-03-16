@@ -228,13 +228,17 @@ void checkBlock(mafBlock_t *mb, char **names, unsigned n, bool isInclude,
         if (maxRefNFrac >= 0.) {
             char *sequence = maf_mafLine_getSequence(ml);
             int64_t length = strlen(sequence);
+            int64_t bases = 0;
             int64_t Ns = 0;
             for (int64_t i = 0; i < length; ++i) {
                 if (sequence[i] == 'N' || sequence[i] == 'n') {
                     ++Ns;
                 }
+                if (sequence[i] != '-') {
+                    ++bases;
+                }
             }
-            if ((double)Ns / (double)length <= maxRefNFrac) {
+            if ((double)Ns / (double)bases <= maxRefNFrac) {
                 reportBlock(mb, names, n, isInclude);
             } 
             return;
