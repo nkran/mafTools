@@ -66,9 +66,32 @@ void usage(void) {
     usageMessage('h', "help", "show this help message and exit.");
     usageMessage('m', "maf", "path to maf file. use - for stdin.");
     usageMessage('\0', "order", "comma separated list of sequence names.");
+    usageMessage('\0', "order-file", "file with order list of sequence names, one per line.");
     usageMessage('v', "verbose", "turns on verbose output.");
     exit(EXIT_FAILURE);
 }
+
+static void parseOrderList(char *filename, char *orderlist) {
+    int64_t line_buffer_len = kMaxStringLength;
+    char *line_buffer = malloc(line_buffer_len * sizeof(char));
+    int64_t bytes_read; 
+    FILE *order_file = fopen(filename, "r");
+    if (!order_file) {
+        fprintf(stderr, "Error [mafRowOrderer]: Unable to open order list file %s\n", filename);
+        exit(1);
+    }
+    orderlist[0] = '\0';
+    while ((bytes_read = de_getline(&line_buffer, &line_buffer_len, order_file)) != -1) {
+        if (bytes_read > 0) {
+            if (orderlist[0] != '\0') {
+                strcat(orderlist, ",");
+            }
+            strncat(orderlist, line_buffer, bytes_read -1);
+        }
+    }
+    free(line_buffer);
+}
+
 void parseOptions(int argc, char **argv, char *filename, char *orderlist) {
     extern int g_debug_flag;
     extern int g_verbose_flag;
@@ -82,10 +105,11 @@ void parseOptions(int argc, char **argv, char *filename, char *orderlist) {
             {"version", no_argument, 0, 0},
             {"maf",  required_argument, 0, 'm'},
             {"order",  required_argument, 0, 0},
+            {"order-file",  required_argument, 0, 0},            
             {0, 0, 0, 0}
         };
         int longIndex = 0;
-        c = getopt_long(argc, argv, "m:i:e:g:l:v:h",
+        c = getopt_long(argc, argv, "m:f:i:e:g:l:v:h",
                         longOptions, &longIndex);
         if (c == -1) {
             break;
@@ -101,11 +125,17 @@ void parseOptions(int argc, char **argv, char *filename, char *orderlist) {
                 sscanf(optarg, "%s", orderlist);
                 break;
             }
+            if (strcmp("order-file", longOptions[longIndex].name) == 0) {            
+                setOrder = true;
+                parseOrderList(optarg, orderlist);
+                break;
+            }
             break;
         case 'm':
             setMafName = true;
             sscanf(optarg, "%s", filename);
             break;
+        case 'f':
         case 'v':
             g_verbose_flag++;
             break;
@@ -224,7 +254,7 @@ void destroyNameList(char **names, unsigned n) {
 }
 int main(int argc, char **argv) {
     char filename[kMaxStringLength];
-    char orderlist[kMaxStringLength];
+    char *orderlist = (char*)malloc(1000000 * sizeof(char));
     orderlist[0] = '\0';
     parseOptions(argc, argv,  filename, orderlist);
     unsigned n = 1 + countChar(orderlist, ',');
@@ -233,5 +263,6 @@ int main(int argc, char **argv) {
     orderInput(mfa, order, n);
     maf_destroyMfa(mfa);
     destroyNameList(order, n);
+    free(orderlist);
     return EXIT_SUCCESS;
 }
