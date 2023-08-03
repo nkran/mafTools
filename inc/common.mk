@@ -24,22 +24,22 @@ endif
 jpl_flags = -Wshadow -Wpointer-arith -Wstrict-prototypes -Wmissing-prototypes
 
 #Release compiler flags
-cflags_opt = -O3 -Wall -Werror --pedantic -funroll-loops -DNDEBUG ${jpl_flags}
+cflags_opt = -O3 -Wall --pedantic -funroll-loops -DNDEBUG ${jpl_flags}
 
 #Debug flags (slow)
-cflags_dbg = -Wall -Werror --pedantic -g -fno-inline -DBEN_DEBUG ${jpl_flags}
+cflags_dbg = -Wall --pedantic -g -fno-inline -DBEN_DEBUG ${jpl_flags}
 
 #Ultra Debug flags (really slow)
-cflags_ultraDbg = -Wall -Werror --pedantic -g -fno-inline -DBEN_DEBUG -BEN_ULTRA_DEBUG
+cflags_ultraDbg = -Wall --pedantic -g -fno-inline -DBEN_DEBUG -BEN_ULTRA_DEBUG
 
 #Profile flags
-cflags_prof = -Wall -Werror --pedantic -pg -O3 -g
+cflags_prof = -Wall --pedantic -pg -O3 -g
 
 sonLibPath = ../../sonLib/lib
 
 #Flags to use
 cflags = ${cflags_opt} -I ${sonLibPath} -I ../inc -I ../external
-testFlags = -O0 -g -Wall -Werror --pedantic -I ${sonLibPath} -I ../inc -I ../external
+testFlags = -O0 -g -Wall --pedantic -I ${sonLibPath} -I ../inc -I ../external
 #cflags = ${cflags_dbg}
 
 # location of Tokyo cabinet
